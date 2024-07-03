@@ -48,6 +48,22 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+const setImageURL = (doc) => {
+  if (doc.profileImg) {
+    const imageUrl = `${process.env.BASE_URL}/users/${doc.profileImg}`;
+    doc.profileImg = imageUrl;
+  }
+};
+// findOne, findAll and update
+userSchema.post('init', (doc) => {
+  setImageURL(doc);
+});
+
+// create
+userSchema.post('save', (doc) => {
+  setImageURL(doc);
+});
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

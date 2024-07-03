@@ -2,7 +2,6 @@ const asyncHandler = require('express-async-handler');
 const { v4: uuidv4 } = require('uuid');
 const sharp = require('sharp');
 const bcrypt = require('bcryptjs');
-
 const factory = require('./handlersFactory');
 const ApiError = require('../utils/api_error');
 const { uploadSingleImage } = require('../middlewares/uploadImageMiddleware');
@@ -123,16 +122,12 @@ exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
 });
 
 // @desc    Update logged user data (without password, role)
-// @route   PUT /api/v1/users/updateMe
+// @route   patch /api/v1/users/updateMe
 // @access  Private/Protect
 exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
   const updatedUser = await User.findByIdAndUpdate(
-    req.user._id,
-    {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-    },
-    { new: true }
+    req.params.id,
+    
   );
 
   res.status(200).json({ data: updatedUser });

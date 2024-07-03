@@ -6,7 +6,7 @@ const User = require("../../models/userModel");
 exports.createUserValidator = [
   check("firstName")
     .notEmpty()
-    .withMessage("User required")
+    .withMessage("First name required")
     .isLength({ min: 3 })
     .withMessage("Too short User name")
     .isLength({ max: 15 })
@@ -14,7 +14,7 @@ exports.createUserValidator = [
 
   check("lastName")
     .notEmpty()
-    .withMessage("User required")
+    .withMessage("Last name required")
     .isLength({ min: 3 })
     .withMessage("Too short User name")
     .isLength({ max: 15 })
@@ -28,7 +28,7 @@ exports.createUserValidator = [
 
   check("phone")
     .notEmpty()
-    .isMobilePhone(["ar-EG", "ar-SA"])
+    .isMobilePhone(["ar-EG"])
     .withMessage("Invalid phone number only accepted Egy and SA Phone numbers")
     .custom((val) =>
       User.findOne({ phone: val }).then((user) => {
@@ -55,7 +55,7 @@ exports.updateUserValidator = [
 
   check("phone")
     .notEmpty()
-    .isMobilePhone(["ar-EG", "ar-SA"])
+    .isMobilePhone(["ar-EG"])
     .withMessage("Invalid phone number only accepted Egy and SA Phone numbers")
     .custom((val) =>
       User.findOne({ phone: val }).then((user) => {
@@ -108,7 +108,7 @@ exports.deleteUserValidator = [
 exports.updateLoggedUserValidator = [
   check("phone")
     .notEmpty()
-    .isMobilePhone(["ar-EG", "ar-SA"])
+    .isMobilePhone(["ar-EG"])
     .withMessage("Invalid phone number only accepted Egy and SA Phone numbers")
     .custom((val) =>
       User.findOne({ phone: val }).then((user) => {
