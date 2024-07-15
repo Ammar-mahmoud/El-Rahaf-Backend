@@ -2,7 +2,7 @@ const express = require('express');
 const {
   getUserValidator,
   createUserValidator,
-  updateUserValidator,
+  //updateUserValidator,
   deleteUserValidator,
 } = require('../utils/validators/user_validator');
 
@@ -10,7 +10,7 @@ const {
   getUsers,
   getUser,
   createUser,
-  updateUser,
+  //updateUser,
   deleteUser,
   uploadUserImage,
   resizeImage,
@@ -36,7 +36,7 @@ router
 router
   .route('/:id')
   .get(getUserValidator, getUser)
-  .patch(uploadUserImage, resizeImage, updateUserValidator, updateUser)
+  //.patch(uploadUserImage, resizeImage, updateUserValidator, updateUser)
   .delete(deleteUserValidator, deleteUser);
 
 module.exports = router;

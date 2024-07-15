@@ -48,40 +48,40 @@ exports.getUserValidator = [
   validatorMiddleware,
 ];
 
-exports.updateUserValidator = [
-  check("id").isMongoId().withMessage("Invalid User id format"),
-  check("firstName")
-    .optional()
-    .withMessage("First name required")
-    .isLength({ min: 3 })
-    .withMessage("Too short User name")
-    .isLength({ max: 15 })
-    .withMessage("Too long User name"),
+// exports.updateUserValidator = [
+//   check("id").isMongoId().withMessage("Invalid User id format"),
+//   check("firstName")
+//     .optional()
+//     .withMessage("First name required")
+//     .isLength({ min: 3 })
+//     .withMessage("Too short User name")
+//     .isLength({ max: 15 })
+//     .withMessage("Too long User name"),
 
-  check("lastName")
-    .optional()
-    .withMessage("Last name required")
-    .isLength({ min: 3 })
-    .withMessage("Too short User name")
-    .isLength({ max: 15 })
-    .withMessage("Too long User name"),
+//   check("lastName")
+//     .optional()
+//     .withMessage("Last name required")
+//     .isLength({ min: 3 })
+//     .withMessage("Too short User name")
+//     .isLength({ max: 15 })
+//     .withMessage("Too long User name"),
 
-  check("phone")
-    .optional()
-    .isMobilePhone(["ar-EG"])
-    .withMessage("Invalid phone number only accepted Egy Phone numbers")
-    .custom((val) =>
-      User.findOne({ phone: val }).then((user) => {
-        if (user) {
-          return Promise.reject(new Error("phone already in user"));
-        }
-      })
-    ),
+//   check("phone")
+//     .optional()
+//     .isMobilePhone(["ar-EG"])
+//     .withMessage("Invalid phone number only accepted Egy Phone numbers")
+//     .custom((val) =>
+//       User.findOne({ phone: val }).then((user) => {
+//         if (user) {
+//           return Promise.reject(new Error("phone already in user"));
+//         }
+//       })
+//     ),
 
-  check("profileImg").optional(),
-  check("role").optional(),
-  validatorMiddleware,
-];
+//   check("profileImg").optional(),
+//   check("role").optional(),
+//   validatorMiddleware,
+// ];
 
 exports.deleteUserValidator = [
   check("id").isMongoId().withMessage("Invalid User id format"),
