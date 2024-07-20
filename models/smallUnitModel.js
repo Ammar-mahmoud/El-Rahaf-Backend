@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const smallUnitSchema = new mongoose.Schema({
-    id: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     noPersons: { type: Number },
     type: { type: String, enum: ["apartment", "room"], },

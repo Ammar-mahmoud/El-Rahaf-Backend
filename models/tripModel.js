@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const tripSchema = new mongoose.Schema({
-    id: { type: String, required: true, unique: true },
     smallUnitID: { type: mongoose.Schema.Types.ObjectId, ref: 'SmallUnit' },
     startDate: { type: Date },
     endDate: { type: Date },

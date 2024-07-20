@@ -2,26 +2,31 @@ const mongoose = require("mongoose");
 
 const buildingSchema = new mongoose.Schema(
   {
-    id: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     type: { type: String, enum: ["tower", "hotel"], required: true },
-    smallUnits: [{ type: mongoose.Schema.Types.ObjectId, ref: "SmallUnit" }],
     description: { type: String },
-    avgReview: { type: Number },
-    noReviewers: { type: Number },
+    ratingsAverage: {
+      type: Number,
+      min: [1, 'Rating must be above or equal 1.0'],
+      max: [5, 'Rating must be below or equal 5.0'],
+    },
+    ratingsQuantity: {
+      type: Number,
+      default: 0,
+    },
     location: {
       type: String,
       enum: [
-        "elsokhna",
-        "marsa matrouh",
-        "alexandria",
-        "sharm el-sheikh",
-        "hurghada",
-        "dahab",
+        "elsokhna-السخنة",
+        "marsa matrouh-مرسي مطروح",
+        "alexandria-اسكندرية",
+        "sharm el-sheikh-شرم الشيخ",
+        "hurghada-الغردقة",
+        "dahab-دهب",
       ],
     },
-    coverImage: { type: String },
-    images: { type: String },
+    imageCover: { type: String, required: true},
+    images: [{ type: String }],
   },
   {
     timestamps: true,
@@ -38,7 +43,7 @@ buildingSchema.virtual("reviews", {
 });
 
 buildingSchema.virtual("trips", {
-  ref: "Review",
+  ref: "Trip",
   foreignField: "building",
   localField: "_id",
 });
