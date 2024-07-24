@@ -18,9 +18,13 @@ const {
 } = require("../services/buildingService");
 
 const authService = require('../services/authService');
+const reviewsRoute = require('./reviewApi');
+const smallUnitRoute = require('./smallUnitApi');
 
 const router = express.Router();
 
+router.use('/:buildingId/reviews', reviewsRoute);
+router.use('/:buildingId/smallUnits', smallUnitRoute);
 router
   .route('/')
   .get(getBuildings)
