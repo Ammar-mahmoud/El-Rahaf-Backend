@@ -21,8 +21,8 @@ exports.signupValidator = [
 
   check("phone")
     .notEmpty()
-    .isMobilePhone(["ar-EG", "ar-SA"])
-    .withMessage("Invalid phone number only accepted Egy and SA Phone numbers")
+    .isMobilePhone(["ar-EG"])
+    .withMessage("Invalid phone number only accepted Egy Phone numbers")
     .custom((val) =>
       User.findOne({ phone: val }).then((user) => {
         if (user) {
@@ -44,8 +44,8 @@ exports.loginValidator = [
   check("phone")
     .notEmpty()
     .withMessage("Phone required")
-    .isMobilePhone(["ar-EG", "ar-SA"])
-    .withMessage("Invalid phone number only accepted Egy and SA Phone numbers"),
+    .isMobilePhone(["ar-EG"])
+    .withMessage("Invalid phone number only accepted EgyPhone numbers"),
 
   check("password")
     .notEmpty()

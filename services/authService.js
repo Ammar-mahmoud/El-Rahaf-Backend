@@ -21,11 +21,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
     password: req.body.password,
     profileImg: req.body.profileImg,
   });
- 
-  // 2- Generate token
-  const token = createToken(user._id);
-
-  res.status(201).json({ data: user, token });
+  res.status(201).json({ data: user});
 });
 
 // @desc    Login
@@ -38,6 +34,9 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
     return next(new ApiError('Incorrect phone or password', 401));
+  }
+  if (!user.isVerified) {
+    return next(new ApiError('user is not verified yet', 401));
   }
   // 3) generate token
   const token = createToken(user._id);
@@ -102,6 +101,84 @@ exports.protect = asyncHandler(async (req, res, next) => {
   next();
 });
 
+// @desc    registrationCode
+// @route   POST /api/v1/auth/registrationCode
+// @access  Public
+exports.registrationCode = asyncHandler(async (req, res, next) => {
+  // 1) Get user by phone
+  const user = await User.findOne({ phone: req.body.phone });
+  if (!user) {
+    return next(
+      new ApiError(`There is no user with that phone ${req.body.phone}`, 404)
+    );
+  }
+  if (user.isVerified) {
+    return next(
+      new ApiError(`this account is already verified`, 404)
+    );
+  }
+  // 2) If user exist, Generate hash reset random 6 digits and save it in db
+  const OTPCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const hashedCode = crypto
+    .createHash('sha256')
+    .update(OTPCode)
+    .digest('hex');
+
+  // Save hashed password reset code into db
+  user.verificationCode = hashedCode;
+  // Add expiration time for password reset code (10 min)
+  user.verificationExpires = Date.now() + 10 * 60 * 1000;
+  await user.save();
+
+  // 3) Send the reset code via phone
+  const message = `Hi ${user.firstName},\n We received a request to verify your Account. \n ${OTPCode} \n Enter this code to complete the reset. \n Thanks for helping us keep your account secure.\n shaghaf Team`;
+  try {
+    await sendOtp({
+      phone: user.phone,
+      subject: 'Your password reset code (valid for 10 min)',
+      message,
+    });
+  } catch (err) {
+    user.verificationCode = undefined;
+    user.verificationExpires = undefined;
+
+    await user.save();
+    return next(new ApiError('There is an error in sending phone', 500));
+  }
+
+  res
+    .status(200)
+    .json({ status: 'Success', message: 'OTP code sent to phone' });
+});
+
+// @desc    Verify Account code
+// @route   POST /api/v1/auth/verifyAccount
+// @access  Public
+exports.VerifyAccount = asyncHandler(async (req, res, next) => {
+  // 1) Get user based on reset code
+  const hashedCode = crypto
+    .createHash('sha256')
+    .update(req.body.OTPCode)
+    .digest('hex');
+
+  const user = await User.findOne({
+    verificationCode: hashedCode,
+    verificationExpires: { $gt: Date.now() },
+  });
+  if (!user) {
+    return next(new ApiError('code invalid or expired'));
+  }
+
+  // 2) Reset code valid
+  user.isVerified = true;
+  await user.save();
+
+  // 2- Generate token
+  const token = createToken(user._id);
+
+  res.status(201).json({ data: user, token });
+});
+
 // @desc    Authorization (User Permissions)
 // ["admin", "worker"]
 exports.allowedTo = (...roles) =>
@@ -126,6 +203,10 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     return next(
       new ApiError(`There is no user with that phone ${req.body.phone}`, 404)
     );
+  }
+
+  if (!user.isVerified) {
+    return next(new ApiError('user is not verified yet', 401));
   }
   // 2) If user exist, Generate hash reset random 6 digits and save it in db
   const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
