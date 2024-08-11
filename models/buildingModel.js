@@ -23,6 +23,7 @@ const buildingSchema = new mongoose.Schema(
         "sharm el-sheikh-شرم الشيخ",
         "hurghada-الغردقة",
         "dahab-دهب",
+        "Elfayoum-الفيوم"
       ],
     },
     imageCover: { type: String, required: true},
@@ -42,8 +43,8 @@ buildingSchema.virtual("reviews", {
   localField: "_id",
 });
 
-buildingSchema.virtual("trips", {
-  ref: "Trip",
+buildingSchema.virtual("regiments", {
+  ref: "Regiment",
   foreignField: "building",
   localField: "_id",
 });

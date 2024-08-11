@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const smallUnitSchema = new mongoose.Schema({
   name: { type: String, required: true },
   noPersons: { type: Number, required: true },
-  type: { type: String, enum: ["apartment", "room"] },
+  type: { type: String, enum: ["apartment", "room"], required: true },
   images: [{ type: String, required: true }],
   building: {
     type: mongoose.Schema.Types.ObjectId,
