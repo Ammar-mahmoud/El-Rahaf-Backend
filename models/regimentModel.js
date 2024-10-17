@@ -4,7 +4,7 @@ const regimentSchema = new mongoose.Schema({
     building:{ type: mongoose.Schema.Types.ObjectId, ref: 'Building', required: true},
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
-    activities: [{type: String, required: true}]
+    activities: [{type: String, required: true}],
   },
   {
     timestamps: true,
@@ -13,6 +13,13 @@ const regimentSchema = new mongoose.Schema({
     toObject: { virtuals: true },
   }
 );
+
+regimentSchema.pre('save', function (next) {
+  if (this.endDate <= this.startDate) {
+    throw new Error('End date must be after start date');
+  }
+  next();
+});
 
 regimentSchema.virtual("trips", {
   ref: "Trip",

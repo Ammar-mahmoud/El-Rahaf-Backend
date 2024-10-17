@@ -31,7 +31,6 @@ const buildingSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    // to enable virtual populate
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
@@ -70,9 +69,9 @@ buildingSchema.post("init", (doc) => {
 });
 
 // create
-buildingSchema.post("save", (doc) => {
-  setImageURL(doc);
-});
+// buildingSchema.post("save", (doc) => {
+//   setImageURL(doc);
+// });
 
 const Building = mongoose.model("Building", buildingSchema);
 

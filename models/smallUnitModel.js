@@ -29,9 +29,12 @@ smallUnitSchema.post("init", (doc) => {
 });
 
 // create
-smallUnitSchema.post("save", (doc) => {
-  setImageURL(doc);
-});
+// smallUnitSchema.post("save", (doc) => {
+//   setImageURL(doc);
+// });
+
+smallUnitSchema.path('noPersons').validate((value) => value > 0, 'Number of persons must be positive');
+
 
 const SmallUnit = mongoose.model("SmallUnit", smallUnitSchema);
 

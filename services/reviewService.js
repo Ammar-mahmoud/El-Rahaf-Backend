@@ -1,14 +1,15 @@
+const asyncHandler = require("express-async-handler");
 const factory = require('./handlersFactory');
 const Review = require('../models/reviewModel');
 
 // Nested route
 // GET /api/v1/buildings/:buildingId/reviews
-exports.createFilterObj = (req, res, next) => {
+exports.createFilterObj = asyncHandler((req, res, next) => {
   let filterObject = {};
   if (req.params.buildingId) filterObject = { building: req.params.buildingId };
   req.filterObj = filterObject;
   next();
-};
+});
 
 // @desc    Get list of reviews
 // @route   GET /api/v1/reviews

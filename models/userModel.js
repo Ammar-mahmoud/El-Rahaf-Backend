@@ -37,6 +37,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
     verificationCode: String,
     verificationExpires: Date,
     passwordChangedAt: Date,
@@ -66,9 +70,9 @@ userSchema.post('init', (doc) => {
 });
 
 // create
-userSchema.post('save', (doc) => {
-  setImageURL(doc);
-});
+// userSchema.post('save', (doc) => {
+//   setImageURL(doc);
+// });
 
 const User = mongoose.model("User", userSchema);
 

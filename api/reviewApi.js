@@ -1,11 +1,6 @@
 const express = require('express');
-
-const {
-  createReviewValidator,
-  updateReviewValidator,
-  getReviewValidator,
-  deleteReviewValidator,
-} = require('../utils/validators/reviewValidator');
+const Building = require('../models/buildingModel');
+const checkForeignKey = require('../middlewares/checkForeignKey');
 
 const {
   getReview,
@@ -27,23 +22,22 @@ router
   .post(
     authService.protect,
     authService.allowedTo('user'),
+    checkForeignKey(Building, 'buildingId'),
     setBuildingIdAndUserIdToBody,
-    createReviewValidator,
     createReview
   );
+
 router
   .route('/:id')
-  .get(getReviewValidator, getReview)
+  .get(getReview)
   .patch(
     authService.protect,
     authService.allowedTo('user'),
-    updateReviewValidator,
     updateReview
   )
   .delete(
     authService.protect,
     authService.allowedTo('user', 'manager', 'admin'),
-    deleteReviewValidator,
     deleteReview
   );
 
